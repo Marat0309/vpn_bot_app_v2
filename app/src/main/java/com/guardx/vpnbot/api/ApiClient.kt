@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 object ApiClient {
 
     // Base URL - можно будет вынести в настройки
-    private const val BASE_URL = "https://api.guardx.online/"
+    private const val BASE_URL = "https://subs.guardx.online:7241/"
 
     // Alternative for testing
     // private const val BASE_URL = "http://10.0.2.2:8000/" // Android emulator localhost
