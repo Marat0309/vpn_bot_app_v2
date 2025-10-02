@@ -40,8 +40,13 @@ object ServerSyncManager {
             for (server in serversResponse.servers) {
                 try {
                     // Import vless:// URL using existing v2rayNG mechanism
-                    val guid = AngConfigManager.importBatchConfig(server.vless_url, server.id)
-                    if (guid > 0) {
+                    // importBatchConfig returns Pair<Int, Int> (configCount, subCount)
+                    val (configCount, _) = AngConfigManager.importBatchConfig(
+                        server.vless_url,
+                        server.id,
+                        append = true
+                    )
+                    if (configCount > 0) {
                         importedCount++
                         Log.d(AppConfig.TAG, "GuardX: Imported server ${server.name} (${server.country_code})")
                     } else {
@@ -90,7 +95,7 @@ object ServerSyncManager {
      * Save JWT token to storage
      */
     fun saveToken(token: String) {
-        MmkvManager.settingsStorage?.encode("guardx_jwt_token", token)
+        MmkvManager.encodeSettings("guardx_jwt_token", token)
         Log.d(AppConfig.TAG, "GuardX: Token saved")
     }
 
@@ -99,7 +104,7 @@ object ServerSyncManager {
      * @return Token or null if not found
      */
     fun getToken(): String? {
-        return MmkvManager.settingsStorage?.decodeString("guardx_jwt_token")
+        return MmkvManager.decodeSettingsString("guardx_jwt_token")
     }
 
     /**
@@ -113,7 +118,7 @@ object ServerSyncManager {
      * Clear saved token (logout)
      */
     fun clearToken() {
-        MmkvManager.settingsStorage?.remove("guardx_jwt_token")
+        MmkvManager.encodeSettings("guardx_jwt_token", null)
         Log.d(AppConfig.TAG, "GuardX: Token cleared")
     }
 }
