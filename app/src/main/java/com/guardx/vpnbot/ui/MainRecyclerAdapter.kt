@@ -292,14 +292,18 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
      * @param guid The server unique identifier to select
      */
     private fun setSelectServer(guid: String) {
+        android.util.Log.d(AppConfig.TAG, "GuardX Adapter: setSelectServer called with GUID: $guid")
         val selected = MmkvManager.getSelectServer()
+        android.util.Log.d(AppConfig.TAG, "GuardX Adapter: Current selected server: $selected")
         if (guid != selected) {
+            android.util.Log.d(AppConfig.TAG, "GuardX Adapter: Setting new server: $guid")
             MmkvManager.setSelectServer(guid)
             if (!TextUtils.isEmpty(selected)) {
                 notifyItemChanged(mActivity.mainViewModel.getPosition(selected.orEmpty()))
             }
             notifyItemChanged(mActivity.mainViewModel.getPosition(guid))
             if (isRunning) {
+                android.util.Log.d(AppConfig.TAG, "GuardX Adapter: VPN is running, restarting with new server")
                 V2RayServiceManager.stopVService(mActivity)
                 mActivity.lifecycleScope.launch {
                     try {

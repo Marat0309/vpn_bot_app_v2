@@ -131,16 +131,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setSupportActionBar(binding.toolbar)
 
         binding.fab.setOnClickListener {
+            android.util.Log.d(AppConfig.TAG, "GuardX: FAB clicked")
             if (mainViewModel.isRunning.value == true) {
+                android.util.Log.d(AppConfig.TAG, "GuardX: VPN is running, stopping")
                 V2RayServiceManager.stopVService(this)
             } else if ((MmkvManager.decodeSettingsString(AppConfig.PREF_MODE) ?: VPN) == VPN) {
+                android.util.Log.d(AppConfig.TAG, "GuardX: VPN mode detected")
                 val intent = VpnService.prepare(this)
                 if (intent == null) {
+                    android.util.Log.d(AppConfig.TAG, "GuardX: VPN permission already granted, starting")
                     startV2Ray()
                 } else {
+                    android.util.Log.d(AppConfig.TAG, "GuardX: Requesting VPN permission")
                     requestVpnPermission.launch(intent)
                 }
             } else {
+                android.util.Log.d(AppConfig.TAG, "GuardX: Proxy mode, starting")
                 startV2Ray()
             }
         }
