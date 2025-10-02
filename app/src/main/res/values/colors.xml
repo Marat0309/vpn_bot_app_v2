@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPing">#009966</color>
-    <color name="colorPingRed">#FF0099</color>
-    <color name="colorConfigType">#f97910</color>
+    <!-- GuardX VPN Neon/Cyber Theme -->
 
-    <color name="color_fab_active">#f97910</color>
-    <color name="color_fab_inactive">#9C9C9C</color>
-    <color name="color_secondary">#727272</color>
-    <color name="divider_color_light">#E0E0E0</color>
+    <!-- Background Colors -->
+    <color name="background_dark">#0A0E1A</color>
+    <color name="background_card">#1A2540</color>
+    <color name="background_card_selected">#2A3550</color>
 
-    <color name="colorPrimary">#F5F5F5</color>
-    <color name="colorAccent">#000000</color>
+    <!-- Primary Colors -->
+    <color name="neon_cyan">#00D9FF</color>
+    <color name="neon_blue">#0088CC</color>
+    <color name="neon_purple">#6B4CE6</color>
+    <color name="neon_green">#00FF88</color>
+    <color name="neon_red">#FF0066</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9CA3AF</color>
+    <color name="text_hint">#6B7280</color>
+
+    <!-- Status Colors -->
+    <color name="colorPing">#00FF88</color>
+    <color name="colorPingRed">#FF0066</color>
+    <color name="colorConfigType">#00D9FF</color>
+
+    <!-- FAB Colors -->
+    <color name="color_fab_active">#00FF88</color>
+    <color name="color_fab_inactive">#6B7280</color>
+    <color name="color_secondary">#9CA3AF</color>
+    <color name="divider_color_light">#2A3550</color>
+
+    <!-- Material Theme -->
+    <color name="colorPrimary">#0A0E1A</color>
+    <color name="colorAccent">#00D9FF</color>
 </resources>
