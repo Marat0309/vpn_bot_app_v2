@@ -23,7 +23,7 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAuthBinding
 
     // Your Telegram bot username
-    private val TELEGRAM_BOT_USERNAME = "your_guardx_bot" // CHANGE THIS
+    private val TELEGRAM_BOT_USERNAME = "xuiseller_bot"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
