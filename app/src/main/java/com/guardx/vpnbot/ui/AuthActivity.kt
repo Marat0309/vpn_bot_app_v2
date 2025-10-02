@@ -43,6 +43,9 @@ class AuthActivity : AppCompatActivity() {
         // Handle deep link if activity was opened via deep link
         handleDeepLink(intent)
 
+        // Check clipboard for token on resume (when user returns from Telegram)
+        checkClipboardForToken()
+
         // Login button click
         binding.btnLoginTelegram.setOnClickListener {
             // Check if user entered token manually
@@ -75,6 +78,33 @@ class AuthActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleDeepLink(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Check clipboard when user returns to app (e.g., from Telegram)
+        checkClipboardForToken()
+    }
+
+    /**
+     * Check clipboard for JWT token and auto-login if found
+     */
+    private fun checkClipboardForToken() {
+        try {
+            val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clipData = clipboard.primaryClip
+            if (clipData != null && clipData.itemCount > 0) {
+                val text = clipData.getItemAt(0).text?.toString() ?: ""
+                // JWT tokens start with "eyJ"
+                if (text.startsWith("eyJ") && text.length > 100) {
+                    Log.d(AppConfig.TAG, "GuardX: Found token in clipboard, auto-logging in...")
+                    // Auto-login with clipboard token
+                    handleTokenReceived(text)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(AppConfig.TAG, "GuardX: Error checking clipboard", e)
+        }
     }
 
     /**
