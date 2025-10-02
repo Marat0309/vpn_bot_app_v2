@@ -98,12 +98,9 @@ class AboutActivity : BaseActivity() {
             }
         }
 
-        binding.layoutSoureCcode.setOnClickListener {
-            Utils.openUri(this, AppConfig.APP_URL)
-        }
-
-        binding.layoutFeedback.setOnClickListener {
-            Utils.openUri(this, AppConfig.APP_ISSUES_URL)
+        binding.layoutGuardxBot.setOnClickListener {
+            // Open GuardX bot
+            Utils.openUri(this, "https://t.me/xuiseller_bot")
         }
 
         binding.layoutOssLicenses.setOnClickListener {
@@ -116,15 +113,7 @@ class AboutActivity : BaseActivity() {
                 .show()
         }
 
-        binding.layoutTgChannel.setOnClickListener {
-            Utils.openUri(this, AppConfig.TG_CHANNEL_URL)
-        }
-
-        binding.layoutPrivacyPolicy.setOnClickListener {
-            Utils.openUri(this, AppConfig.APP_PRIVACY_POLICY)
-        }
-
-        "v${BuildConfig.VERSION_NAME} (${SpeedtestManager.getLibVersion()})".also {
+        "GuardX VPN v${BuildConfig.VERSION_NAME}".also {
             binding.tvVersion.text = it
         }
     }
