@@ -120,11 +120,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setSupportActionBar(binding.toolbar)
 
         // GuardX: Auto-sync servers on startup
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             val token = com.guardx.vpnbot.api.ServerSyncManager.getToken()
             if (token != null) {
-                android.util.Log.d(AppConfig.TAG, "GuardX: Auto-syncing servers...")
-                com.guardx.vpnbot.api.ServerSyncManager.syncServersFromApi(token)
+                android.util.Log.d(AppConfig.TAG, "GuardX: Auto-syncing servers on startup...")
+                val importedCount = com.guardx.vpnbot.api.ServerSyncManager.syncServersFromApi(token)
+                if (importedCount > 0) {
+                    launch(Dispatchers.Main) {
+                        android.util.Log.d(AppConfig.TAG, "GuardX: Auto-sync completed, reloading server list")
+                        mainViewModel.reloadServerList()
+                    }
+                }
             }
         }
 

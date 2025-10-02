@@ -8,6 +8,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/service_restart"
+        android:icon="@android:drawable/ic_menu_revert"
         android:title="@string/title_service_restart"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 </menu>
