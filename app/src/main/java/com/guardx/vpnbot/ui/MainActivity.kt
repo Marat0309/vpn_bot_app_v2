@@ -53,8 +53,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private val adapter by lazy { MainRecyclerAdapter(this) }
     private val requestVpnPermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        android.util.Log.d(AppConfig.TAG, "GuardX: VPN permission result: resultCode=${it.resultCode}, RESULT_OK=$RESULT_OK")
         if (it.resultCode == RESULT_OK) {
+            android.util.Log.d(AppConfig.TAG, "GuardX: VPN permission granted, starting V2Ray")
             startV2Ray()
+        } else {
+            android.util.Log.e(AppConfig.TAG, "GuardX: VPN permission DENIED by user!")
         }
     }
     private val requestSubSettingActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
