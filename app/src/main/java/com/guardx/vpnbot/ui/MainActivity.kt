@@ -148,13 +148,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 startV2Ray()
             }
         }
-        binding.layoutTest.setOnClickListener {
+        // Test connection on button long press
+        binding.fab.setOnLongClickListener {
             if (mainViewModel.isRunning.value == true) {
                 setTestState(getString(R.string.connection_test_testing))
                 mainViewModel.testCurrentServerRealPing()
-            } else {
-//                tv_test_state.text = getString(R.string.connection_test_fail)
             }
+            true
         }
 
         binding.recyclerView.setHasFixedSize(true)
@@ -213,15 +213,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mainViewModel.isRunning.observe(this) { isRunning ->
             adapter.isRunning = isRunning
             if (isRunning) {
-                binding.fab.setImageResource(R.drawable.ic_stop_24dp)
-                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_fab_active))
+                binding.fab.text = "ОТКЛЮЧИТЬСЯ"
+                binding.fab.setIconResource(R.drawable.ic_stop_24dp)
+                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.neon_red))
                 setTestState(getString(R.string.connection_connected))
-                binding.layoutTest.isFocusable = true
             } else {
-                binding.fab.setImageResource(R.drawable.ic_play_24dp)
-                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_fab_inactive))
+                binding.fab.text = "ПОДКЛЮЧИТЬСЯ"
+                binding.fab.setIconResource(R.drawable.ic_play_24dp)
+                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.neon_cyan))
                 setTestState(getString(R.string.connection_not_connected))
-                binding.layoutTest.isFocusable = false
             }
         }
         mainViewModel.startListenBroadcast()

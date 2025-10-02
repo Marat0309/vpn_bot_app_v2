@@ -87,39 +87,7 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
             holder.itemMainBinding.tvSubscription.text = subRemarks
             holder.itemMainBinding.layoutSubscription.visibility = if (subRemarks.isEmpty()) View.GONE else View.VISIBLE
 
-            //layout
-            if (doubleColumnDisplay) {
-                holder.itemMainBinding.layoutShare.visibility = View.GONE
-                holder.itemMainBinding.layoutEdit.visibility = View.GONE
-                holder.itemMainBinding.layoutRemove.visibility = View.GONE
-                holder.itemMainBinding.layoutMore.visibility = View.VISIBLE
-
-                //share method
-                val shareOptions = if (isCustom) share_method_more.asList().takeLast(3) else share_method_more.asList()
-
-                holder.itemMainBinding.layoutMore.setOnClickListener {
-                    shareServer(guid, profile, position, shareOptions, if (isCustom) 2 else 0)
-                }
-            } else {
-                holder.itemMainBinding.layoutShare.visibility = View.VISIBLE
-                holder.itemMainBinding.layoutEdit.visibility = View.VISIBLE
-                holder.itemMainBinding.layoutRemove.visibility = View.VISIBLE
-                holder.itemMainBinding.layoutMore.visibility = View.GONE
-
-                //share method
-                val shareOptions = if (isCustom) share_method.asList().takeLast(1) else share_method.asList()
-
-                holder.itemMainBinding.layoutShare.setOnClickListener {
-                    shareServer(guid, profile, position, shareOptions, if (isCustom) 2 else 0)
-                }
-
-                holder.itemMainBinding.layoutEdit.setOnClickListener {
-                    editServer(guid, profile)
-                }
-                holder.itemMainBinding.layoutRemove.setOnClickListener {
-                    removeServer(guid, position)
-                }
-            }
+            // Buttons removed - simplified UI
 
             holder.itemMainBinding.infoContainer.setOnClickListener {
                 setSelectServer(guid)
