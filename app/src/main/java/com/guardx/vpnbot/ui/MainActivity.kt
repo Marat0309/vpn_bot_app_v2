@@ -130,9 +130,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // GuardX: Check authentication
+        if (!com.guardx.vpnbot.api.ServerSyncManager.isAuthenticated()) {
+            android.util.Log.d(AppConfig.TAG, "GuardX: User not authenticated, redirecting to AuthActivity")
+            startActivity(android.content.Intent(this, AuthActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(binding.root)
         title = getString(R.string.title_server)
         setSupportActionBar(binding.toolbar)
+
+        // GuardX: Auto-sync servers on startup
+        lifecycleScope.launch {
+            val token = com.guardx.vpnbot.api.ServerSyncManager.getToken()
+            if (token != null) {
+                android.util.Log.d(AppConfig.TAG, "GuardX: Auto-syncing servers...")
+                com.guardx.vpnbot.api.ServerSyncManager.syncServersFromApi(token)
+            }
+        }
 
         binding.fab.setOnClickListener {
             android.util.Log.d(AppConfig.TAG, "GuardX: FAB clicked")
