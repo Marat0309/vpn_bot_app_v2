@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/view_height_dp160"
-    android:background="@drawable/nav_header_bg"
+    android:layout_height="180dp"
+    android:background="@drawable/gradient_neon_cyan"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/padding_spacing_dp16">
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginBottom="16dp" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:fontFamily="@font/montserrat_thin"
-        android:gravity="center"
-        android:paddingTop="@dimen/padding_spacing_dp8"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        android:text="GuardX VPN"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:fontFamily="sans-serif-medium" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Защищённое соединение"
+        android:textSize="12sp"
+        android:textColor="#CCFFFFFF"
+        android:layout_marginTop="4dp" />
 
 </LinearLayout>

@@ -11,4 +11,9 @@
         android:icon="@android:drawable/ic_menu_revert"
         android:title="@string/title_service_restart"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/open_settings_menu"
+        android:icon="@drawable/ic_settings_24dp"
+        android:title="Настройки"
+        app:showAsAction="ifRoom" />
 </menu>

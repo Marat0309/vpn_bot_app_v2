@@ -176,11 +176,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mItemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback(adapter))
         mItemTouchHelper?.attachToRecyclerView(binding.recyclerView)
 
-        val toggle = ActionBarDrawerToggle(
-            this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+        // Removed ActionBarDrawerToggle - no hamburger icon
+        // Drawer can still be opened by swipe or settings button
         binding.navView.setNavigationItemSelectedListener(this)
 
         initGroupTab()
@@ -354,6 +351,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         R.id.service_restart -> {
             restartV2Ray()
+            true
+        }
+
+        R.id.open_settings_menu -> {
+            // Open navigation drawer when settings button clicked
+            binding.drawerLayout.openDrawer(GravityCompat.START)
             true
         }
 
