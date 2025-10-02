@@ -36,6 +36,10 @@ object ServerSyncManager {
 
             Log.d(AppConfig.TAG, "GuardX: Received ${servers.size} servers from API")
 
+            // Remove old GuardX servers before importing new ones to avoid duplicates
+            MmkvManager.removeServerViaSubid("guardx_mobile")
+            Log.d(AppConfig.TAG, "GuardX: Removed old servers")
+
             var importedCount = 0
             for (server in servers) {
                 try {

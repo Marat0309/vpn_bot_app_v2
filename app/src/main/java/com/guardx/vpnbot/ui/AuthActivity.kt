@@ -30,8 +30,12 @@ class AuthActivity : AppCompatActivity() {
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Check if already authenticated
-        if (ServerSyncManager.isAuthenticated()) {
+        // Check if already authenticated (but not if we have a deep link with new token)
+        val hasDeepLink = intent?.data != null &&
+                         intent.data?.scheme == "guardxvpn" &&
+                         intent.data?.host == "auth"
+
+        if (ServerSyncManager.isAuthenticated() && !hasDeepLink) {
             navigateToMain()
             return
         }
@@ -78,18 +82,22 @@ class AuthActivity : AppCompatActivity() {
      * Format: guardxvpn://auth?token=eyJhbGci...
      */
     private fun handleDeepLink(intent: Intent?) {
+        Log.d(AppConfig.TAG, "GuardX: Checking deep link. Intent: ${intent?.data}")
+
         val data: Uri? = intent?.data
 
         if (data != null && data.scheme == "guardxvpn" && data.host == "auth") {
             val token = data.getQueryParameter("token")
 
             if (token != null) {
-                Log.d(AppConfig.TAG, "GuardX: Received token via deep link")
+                Log.d(AppConfig.TAG, "GuardX: Received token via deep link: ${token.take(20)}...")
                 handleTokenReceived(token)
             } else {
                 Log.e(AppConfig.TAG, "GuardX: Deep link missing token parameter")
                 Toast.makeText(this, "Ошибка авторизации: токен не получен", Toast.LENGTH_LONG).show()
             }
+        } else {
+            Log.d(AppConfig.TAG, "GuardX: No valid deep link found")
         }
     }
 
