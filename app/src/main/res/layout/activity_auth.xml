@@ -46,6 +46,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Token Input Field -->
+    <EditText
+        android:id="@+id/etToken"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Или вставьте токен сюда"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9CA3AF"
+        android:background="@android:color/transparent"
+        android:padding="16dp"
+        android:inputType="text"
+        android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@id/btnLoginTelegram"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp" />
+
     <!-- Login with Telegram Button -->
     <Button
         android:id="@+id/btnLoginTelegram"

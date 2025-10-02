@@ -41,7 +41,30 @@ class AuthActivity : AppCompatActivity() {
 
         // Login button click
         binding.btnLoginTelegram.setOnClickListener {
-            openTelegramBot()
+            // Check if user entered token manually
+            val manualToken = binding.etToken.text.toString().trim()
+            if (manualToken.isNotEmpty()) {
+                Log.d(AppConfig.TAG, "GuardX: Using manually entered token")
+                handleTokenReceived(manualToken)
+            } else {
+                openTelegramBot()
+            }
+        }
+
+        // Monitor clipboard for token paste
+        binding.etToken.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // Auto-paste from clipboard if it looks like a token
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val clipData = clipboard.primaryClip
+                if (clipData != null && clipData.itemCount > 0) {
+                    val text = clipData.getItemAt(0).text?.toString() ?: ""
+                    if (text.startsWith("eyJ")) { // JWT tokens start with "eyJ"
+                        binding.etToken.setText(text)
+                        Log.d(AppConfig.TAG, "GuardX: Auto-pasted token from clipboard")
+                    }
+                }
+            }
         }
     }
 
