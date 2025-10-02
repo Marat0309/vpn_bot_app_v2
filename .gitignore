@@ -1,0 +1,34 @@
+# Восстановим .gitignore
+cat > .gitignore << 'EOF'
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Local configuration
+local.properties
+*.orig
+*.log
+
+# Build outputs
+app/build/
+*.apk
+*.aab
+*.aar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Kotlin
+.kotlin/
+
+# Lock files
+*.lock
+EOF
