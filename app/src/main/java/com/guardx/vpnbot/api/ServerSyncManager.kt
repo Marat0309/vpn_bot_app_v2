@@ -90,8 +90,9 @@ object ServerSyncManager {
                 return@withContext null
             }
 
-            val subscriptionResponse = response.body()
-            return@withContext subscriptionResponse?.subscription
+            val subscriptions = response.body()
+            // API returns list, get first item
+            return@withContext subscriptions?.firstOrNull()
 
         } catch (e: Exception) {
             Log.e(AppConfig.TAG, "GuardX: Error getting subscription info", e)

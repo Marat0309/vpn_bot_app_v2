@@ -26,12 +26,12 @@ interface GuardXApiService {
     /**
      * Get user subscriptions
      * @param authorization Bearer JWT token
-     * @return Subscription details
+     * @return List of subscription details
      */
     @GET("/api/mobile/subscriptions")
     suspend fun getSubscriptions(
         @Header("Authorization") authorization: String
-    ): Response<SubscriptionsResponse>
+    ): Response<List<SubscriptionInfo>>
 }
 
 /**
@@ -45,24 +45,41 @@ data class ServerItem(
     val port: Int,
     val uuid: String,
     val security: String,
-    val flow: String,
-    val public_key: String,
-    val short_id: String,
-    val sni: String,
-    val fp: String
+    val flow: String?,
+    val public_key: String?,
+    val short_id: String?,
+    val sni: String?,
+    val fp: String?,
+    // xhttp transport parameters
+    val type: String?,
+    val encryption: String?,
+    val host: String?,
+    val mode: String?,
+    val path: String?,
+    val spx: String?
 ) {
     /**
      * Convert to vless:// URL format for v2rayNG
      */
     fun toVlessUrl(): String {
-        // vless://uuid@address:port?security=reality&pbk=public_key&sid=short_id&sni=sni&fp=fp#name
+        // vless://uuid@address:port?params#name
         val params = buildString {
             append("security=$security")
-            if (public_key.isNotEmpty()) append("&pbk=$public_key")
-            if (short_id.isNotEmpty()) append("&sid=$short_id")
-            if (sni.isNotEmpty()) append("&sni=$sni")
-            if (fp.isNotEmpty()) append("&fp=$fp")
-            if (flow.isNotEmpty()) append("&flow=$flow")
+
+            // xhttp transport parameters
+            if (!type.isNullOrEmpty()) append("&type=$type")
+            if (!encryption.isNullOrEmpty()) append("&encryption=$encryption")
+            if (!host.isNullOrEmpty()) append("&host=$host")
+            if (!mode.isNullOrEmpty()) append("&mode=$mode")
+            if (!path.isNullOrEmpty()) append("&path=${java.net.URLEncoder.encode(path, "UTF-8")}")
+            if (!spx.isNullOrEmpty()) append("&spx=${java.net.URLEncoder.encode(spx, "UTF-8")}")
+
+            // Reality parameters
+            if (!public_key.isNullOrEmpty()) append("&pbk=$public_key")
+            if (!short_id.isNullOrEmpty()) append("&sid=$short_id")
+            if (!sni.isNullOrEmpty()) append("&sni=$sni")
+            if (!fp.isNullOrEmpty()) append("&fp=$fp")
+            if (!flow.isNullOrEmpty()) append("&flow=$flow")
         }
 
         val encodedName = java.net.URLEncoder.encode(name, "UTF-8")
@@ -71,19 +88,15 @@ data class ServerItem(
 }
 
 /**
- * Response from /api/mobile/subscriptions
- */
-data class SubscriptionsResponse(
-    val subscription: SubscriptionInfo
-)
-
-/**
  * User subscription information
  */
 data class SubscriptionInfo(
-    val status: String,
+    val subscription_id: String,
+    val active: Boolean,
+    val plan_name: String,
     val expires_at: String?,
-    val traffic_total: Long?,
-    val traffic_used: Long?,
-    val traffic_remaining: Long?
+    val traffic_limit_gb: Double,
+    val traffic_used_gb: Double,
+    val traffic_remaining_gb: Double,
+    val days_remaining: Int?
 )
