@@ -426,18 +426,19 @@ object AngConfigManager {
             }
             Log.i(AppConfig.TAG, url)
 
+            // GuardX: Try direct connection first, then proxy
             var configText = try {
-                val httpPort = SettingsManager.getHttpPort()
-                HttpUtil.getUrlContentWithUserAgent(url, 15000, httpPort)
+                HttpUtil.getUrlContentWithUserAgent(url)
             } catch (e: Exception) {
-                Log.e(AppConfig.ANG_PACKAGE, "Update subscription: proxy not ready or other error", e)
+                Log.e(AppConfig.TAG, "Update subscription: Failed direct connection, trying proxy", e)
                 ""
             }
             if (configText.isEmpty()) {
                 configText = try {
-                    HttpUtil.getUrlContentWithUserAgent(url)
+                    val httpPort = SettingsManager.getHttpPort()
+                    HttpUtil.getUrlContentWithUserAgent(url, 15000, httpPort)
                 } catch (e: Exception) {
-                    Log.e(AppConfig.TAG, "Update subscription: Failed to get URL content with user agent", e)
+                    Log.e(AppConfig.ANG_PACKAGE, "Update subscription: proxy also failed", e)
                     ""
                 }
             }

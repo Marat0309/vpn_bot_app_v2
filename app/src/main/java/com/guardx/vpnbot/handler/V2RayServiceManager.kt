@@ -94,15 +94,30 @@ object V2RayServiceManager {
      * @param context The context from which the service is started.
      */
     private fun startContextService(context: Context) {
+        Log.d(AppConfig.TAG, "GuardX: startContextService called")
         if (coreController.isRunning) {
+            Log.d(AppConfig.TAG, "GuardX: Core already running, skipping")
             return
         }
-        val guid = MmkvManager.getSelectServer() ?: return
-        val config = MmkvManager.decodeServerConfig(guid) ?: return
+        val guid = MmkvManager.getSelectServer()
+        Log.d(AppConfig.TAG, "GuardX: Selected server GUID: $guid")
+        if (guid == null) {
+            Log.e(AppConfig.TAG, "GuardX: No server selected!")
+            return
+        }
+        val config = MmkvManager.decodeServerConfig(guid)
+        Log.d(AppConfig.TAG, "GuardX: Config loaded: ${config?.remarks}")
+        if (config == null) {
+            Log.e(AppConfig.TAG, "GuardX: Failed to decode server config for GUID: $guid")
+            return
+        }
         if (config.configType != EConfigType.CUSTOM
             && !Utils.isValidUrl(config.server)
             && !Utils.isPureIpAddress(config.server.orEmpty())
-        ) return
+        ) {
+            Log.e(AppConfig.TAG, "GuardX: Invalid server config: ${config.server}")
+            return
+        }
 //        val result = V2rayConfigUtil.getV2rayConfig(context, guid)
 //        if (!result.status) return
 

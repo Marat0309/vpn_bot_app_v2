@@ -263,10 +263,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun startV2Ray() {
-        if (MmkvManager.getSelectServer().isNullOrEmpty()) {
+        android.util.Log.d(AppConfig.TAG, "GuardX: startV2Ray called")
+        val selectedServer = MmkvManager.getSelectServer()
+        android.util.Log.d(AppConfig.TAG, "GuardX: Selected server in startV2Ray: $selectedServer")
+        if (selectedServer.isNullOrEmpty()) {
+            android.util.Log.e(AppConfig.TAG, "GuardX: No server selected in startV2Ray!")
             toast(R.string.title_file_chooser)
             return
         }
+        android.util.Log.d(AppConfig.TAG, "GuardX: Calling V2RayServiceManager.startVService")
         V2RayServiceManager.startVService(this)
     }
 
