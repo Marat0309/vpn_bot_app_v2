@@ -214,13 +214,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             adapter.isRunning = isRunning
             if (isRunning) {
                 binding.fab.text = "ОТКЛЮЧИТЬСЯ"
-                binding.fab.setIconResource(R.drawable.ic_stop_24dp)
-                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.neon_red))
+                binding.fab.setBackgroundResource(R.drawable.bg_connect_button_inactive)
                 setTestState(getString(R.string.connection_connected))
             } else {
                 binding.fab.text = "ПОДКЛЮЧИТЬСЯ"
-                binding.fab.setIconResource(R.drawable.ic_play_24dp)
-                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.neon_cyan))
+                binding.fab.setBackgroundResource(R.drawable.bg_connect_button_active)
                 setTestState(getString(R.string.connection_not_connected))
             }
         }

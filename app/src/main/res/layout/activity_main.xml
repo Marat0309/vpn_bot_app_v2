@@ -87,20 +87,16 @@
                             android:textSize="12sp" />
 
                         <!-- Connect/Disconnect Button -->
-                        <com.google.android.material.button.MaterialButton
+                        <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/fab"
                             android:layout_width="match_parent"
                             android:layout_height="64dp"
                             android:text="ПОДКЛЮЧИТЬСЯ"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:backgroundTint="@color/neon_cyan"
                             android:textColor="@color/background_dark"
-                            app:cornerRadius="32dp"
-                            app:elevation="8dp"
-                            app:icon="@drawable/ic_play_24dp"
-                            app:iconGravity="textStart"
-                            app:iconTint="@color/background_dark"
+                            android:background="@drawable/bg_connect_button_active"
+                            android:elevation="8dp"
                             android:clickable="true"
                             android:focusable="true" />
 
