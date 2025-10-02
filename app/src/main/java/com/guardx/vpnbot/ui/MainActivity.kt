@@ -148,13 +148,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 startV2Ray()
             }
         }
-        // Test connection on button long press
-        binding.fab.setOnLongClickListener {
+        // Test connection on status text click
+        binding.tvTestState.setOnClickListener {
             if (mainViewModel.isRunning.value == true) {
                 setTestState(getString(R.string.connection_test_testing))
                 mainViewModel.testCurrentServerRealPing()
+            } else {
+                toast(getString(R.string.connection_not_connected))
             }
-            true
         }
 
         binding.recyclerView.setHasFixedSize(true)
