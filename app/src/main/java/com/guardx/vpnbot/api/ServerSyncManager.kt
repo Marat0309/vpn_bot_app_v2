@@ -28,27 +28,31 @@ object ServerSyncManager {
                 return@withContext -1
             }
 
-            val serversResponse = response.body()
-            if (serversResponse == null) {
+            val servers = response.body()
+            if (servers == null || servers.isEmpty()) {
                 Log.e(AppConfig.TAG, "GuardX: Empty response body")
                 return@withContext -1
             }
 
-            Log.d(AppConfig.TAG, "GuardX: Received ${serversResponse.servers.size} servers from API")
+            Log.d(AppConfig.TAG, "GuardX: Received ${servers.size} servers from API")
 
             var importedCount = 0
-            for (server in serversResponse.servers) {
+            for (server in servers) {
                 try {
+                    // Convert server to vless:// URL
+                    val vlessUrl = server.toVlessUrl()
+                    Log.d(AppConfig.TAG, "GuardX: Generated vless URL for ${server.name}")
+
                     // Import vless:// URL using existing v2rayNG mechanism
                     // importBatchConfig returns Pair<Int, Int> (configCount, subCount)
                     val (configCount, _) = AngConfigManager.importBatchConfig(
-                        server.vless_url,
-                        server.id,
+                        vlessUrl,
+                        "guardx_mobile", // subid for GuardX servers
                         append = true
                     )
                     if (configCount > 0) {
                         importedCount++
-                        Log.d(AppConfig.TAG, "GuardX: Imported server ${server.name} (${server.country_code})")
+                        Log.d(AppConfig.TAG, "GuardX: Imported server ${server.name}")
                     } else {
                         Log.w(AppConfig.TAG, "GuardX: Failed to import server ${server.name}")
                     }

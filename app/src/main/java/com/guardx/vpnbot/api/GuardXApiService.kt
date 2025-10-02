@@ -21,7 +21,7 @@ interface GuardXApiService {
     @GET("/api/mobile/servers")
     suspend fun getServers(
         @Header("Authorization") authorization: String
-    ): Response<ServersResponse>
+    ): Response<List<ServerItem>>
 
     /**
      * Get user subscriptions
@@ -35,24 +35,40 @@ interface GuardXApiService {
 }
 
 /**
- * Response from /api/mobile/servers
- */
-data class ServersResponse(
-    val servers: List<ServerItem>
-)
-
-/**
- * Individual server configuration
+ * Individual server configuration from API
  */
 data class ServerItem(
-    val id: String,
     val name: String,
-    val country_code: String,
-    val city: String?,
-    val vless_url: String,  // Ready-to-use vless:// URL
-    val is_online: Boolean,
-    val load: Int? // Server load percentage
-)
+    val country_flag: String,
+    val protocol: String,
+    val address: String,
+    val port: Int,
+    val uuid: String,
+    val security: String,
+    val flow: String,
+    val public_key: String,
+    val short_id: String,
+    val sni: String,
+    val fp: String
+) {
+    /**
+     * Convert to vless:// URL format for v2rayNG
+     */
+    fun toVlessUrl(): String {
+        // vless://uuid@address:port?security=reality&pbk=public_key&sid=short_id&sni=sni&fp=fp#name
+        val params = buildString {
+            append("security=$security")
+            if (public_key.isNotEmpty()) append("&pbk=$public_key")
+            if (short_id.isNotEmpty()) append("&sid=$short_id")
+            if (sni.isNotEmpty()) append("&sni=$sni")
+            if (fp.isNotEmpty()) append("&fp=$fp")
+            if (flow.isNotEmpty()) append("&flow=$flow")
+        }
+
+        val encodedName = java.net.URLEncoder.encode(name, "UTF-8")
+        return "vless://$uuid@$address:$port?$params#$encodedName"
+    }
+}
 
 /**
  * Response from /api/mobile/subscriptions
