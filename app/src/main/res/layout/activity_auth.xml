@@ -47,7 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Login with Telegram Button -->
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/btnLoginTelegram"
         android:layout_width="0dp"
         android:layout_height="64dp"
@@ -55,11 +55,7 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:icon="@android:drawable/ic_dialog_email"
-        app:iconGravity="textStart"
-        app:iconPadding="12dp"
-        app:backgroundTint="#0088CC"
-        app:cornerRadius="32dp"
+        android:background="#0088CC"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
