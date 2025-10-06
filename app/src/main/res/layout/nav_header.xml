@@ -1,33 +1,277 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/gradient_neon_cyan"
-    android:gravity="center"
     android:orientation="vertical"
     android:padding="24dp">
 
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@mipmap/ic_launcher"
-        android:layout_marginBottom="16dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- Logo and Title Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="GuardX VPN"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:fontFamily="sans-serif-medium" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GuardX VPN"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-medium" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Защищённое соединение"
+            android:textSize="12sp"
+            android:textColor="#CCFFFFFF"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- Subscription Stats Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/subscription_stats_card"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Защищённое соединение"
-        android:textSize="12sp"
-        android:textColor="#CCFFFFFF"
-        android:layout_marginTop="4dp" />
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="#1A2540"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Plan Name and Status Badge -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:id="@+id/tv_plan_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Базовый тариф"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#00D9FF" />
+
+                <TextView
+                    android:id="@+id/tv_status_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🟢 Активна"
+                    android:textSize="12sp"
+                    android:textColor="#00FF88"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:background="@android:color/transparent" />
+
+            </LinearLayout>
+
+            <!-- Expiry Date -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="📅 Действует до:"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/tv_expiry_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15.12.2025"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+
+            <!-- Days Remaining -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="⏱️ Осталось:"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/tv_days_remaining"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15 дн"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#00FF88" />
+
+            </LinearLayout>
+
+            <!-- Traffic Stats -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="📊 Трафик:"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/tv_traffic_stats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="45.5 / 100 ГБ"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+
+            <!-- Traffic Progress Bar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ProgressBar
+                    android:id="@+id/progress_traffic"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="8dp"
+                    android:layout_weight="1"
+                    android:progress="54"
+                    android:progressTint="#00FF88"
+                    android:progressBackgroundTint="#2A3550"
+                    android:max="100" />
+
+                <TextView
+                    android:id="@+id/tv_traffic_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="54%"
+                    android:textSize="12sp"
+                    android:textColor="#00FF88"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <!-- Telegram ID (for support) -->
+            <TextView
+                android:id="@+id/tv_telegram_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID: 123456789"
+                android:textSize="10sp"
+                android:textColor="#6B7280"
+                android:layout_marginTop="8dp"
+                android:fontFamily="monospace" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Subscription Actions -->
+    <LinearLayout
+        android:id="@+id/subscription_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp"
+        android:visibility="gone">
+
+        <!-- Renew / Buy Subscription Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_renew_subscription"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="🔁 Продлить подписку"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_connect_button_active"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Trial Period Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_trial_period"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="🎁 Получить пробный период"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_connect_button_active"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
+        <!-- Balance Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_balance"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="💵 Баланс"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_connect_button_active" />
+
+    </LinearLayout>
+
+    <!-- No Subscription Message -->
+    <TextView
+        android:id="@+id/tv_no_subscription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="16dp"
+        android:text="⚠️ Нет активной подписки"
+        android:textSize="14sp"
+        android:textColor="#FF0066"
+        android:textAlignment="center"
+        android:background="#1A2540"
+        android:visibility="gone" />
 
 </LinearLayout>

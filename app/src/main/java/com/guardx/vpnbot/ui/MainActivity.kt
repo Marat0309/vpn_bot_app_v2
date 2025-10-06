@@ -180,6 +180,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Drawer can still be opened by swipe or settings button
         binding.navView.setNavigationItemSelectedListener(this)
 
+        // GuardX: Load subscription info when drawer is opened
+        binding.drawerLayout.addDrawerListener(object : androidx.drawerlayout.widget.DrawerLayout.DrawerListener {
+            override fun onDrawerOpened(drawerView: android.view.View) {
+                loadSubscriptionInfo()
+            }
+            override fun onDrawerClosed(drawerView: android.view.View) {}
+            override fun onDrawerSlide(drawerView: android.view.View, slideOffset: Float) {}
+            override fun onDrawerStateChanged(newState: Int) {}
+        })
+
         initGroupTab()
         setupViewModel()
         migrateLegacy()
@@ -401,5 +411,258 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    /**
+     * Load and display subscription information in navigation drawer
+     */
+    private fun loadSubscriptionInfo() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val token = com.guardx.vpnbot.api.ServerSyncManager.getToken()
+                if (token == null) {
+                    launch(Dispatchers.Main) {
+                        showNoSubscription()
+                    }
+                    return@launch
+                }
+
+                val subscriptionInfo = com.guardx.vpnbot.api.ServerSyncManager.getSubscriptionInfo(token)
+
+                launch(Dispatchers.Main) {
+                    if (subscriptionInfo != null && subscriptionInfo.active) {
+                        displaySubscriptionInfo(subscriptionInfo)
+                    } else {
+                        showNoSubscription()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(AppConfig.TAG, "GuardX: Error loading subscription info", e)
+                launch(Dispatchers.Main) {
+                    showNoSubscription()
+                }
+            }
+        }
+    }
+
+    /**
+     * Display subscription information in navigation header
+     */
+    private fun displaySubscriptionInfo(info: com.guardx.vpnbot.api.SubscriptionInfo) {
+        val headerView = binding.navView.getHeaderView(0)
+        val statsCard = headerView.findViewById<androidx.cardview.widget.CardView>(R.id.subscription_stats_card)
+        val noSubText = headerView.findViewById<android.widget.TextView>(R.id.tv_no_subscription)
+        val planNameText = headerView.findViewById<android.widget.TextView>(R.id.tv_plan_name)
+        val statusBadge = headerView.findViewById<android.widget.TextView>(R.id.tv_status_badge)
+        val expiryDateText = headerView.findViewById<android.widget.TextView>(R.id.tv_expiry_date)
+        val daysRemainingText = headerView.findViewById<android.widget.TextView>(R.id.tv_days_remaining)
+        val trafficStatsText = headerView.findViewById<android.widget.TextView>(R.id.tv_traffic_stats)
+        val trafficPercentText = headerView.findViewById<android.widget.TextView>(R.id.tv_traffic_percent)
+        val trafficProgress = headerView.findViewById<android.widget.ProgressBar>(R.id.progress_traffic)
+        val telegramIdText = headerView.findViewById<android.widget.TextView>(R.id.tv_telegram_id)
+        val subscriptionActions = headerView.findViewById<android.widget.LinearLayout>(R.id.subscription_actions)
+        val btnRenew = headerView.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btn_renew_subscription)
+        val btnTrial = headerView.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btn_trial_period)
+        val btnBalance = headerView.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btn_balance)
+
+        // Show stats card, hide "no subscription" message
+        statsCard.visibility = android.view.View.VISIBLE
+        noSubText.visibility = android.view.View.GONE
+        subscriptionActions.visibility = android.view.View.VISIBLE
+
+        // Set plan name
+        planNameText.text = info.plan_name
+
+        // Set status badge
+        val (badgeText, badgeColor) = when {
+            !info.active -> Pair("🔴 Истекла", android.graphics.Color.parseColor("#FF0066"))
+            info.days_remaining != null && info.days_remaining <= 7 -> Pair("🟡 Истекает", android.graphics.Color.parseColor("#FFA500"))
+            else -> Pair("🟢 Активна", android.graphics.Color.parseColor("#00FF88"))
+        }
+        statusBadge.text = badgeText
+        statusBadge.setTextColor(badgeColor)
+
+        // Set expiry date (parse ISO date and format as dd.MM.yyyy)
+        val expiryDate = try {
+            if (info.expires_at != null) {
+                val isoDate = java.time.ZonedDateTime.parse(info.expires_at)
+                val formatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                isoDate.format(formatter)
+            } else {
+                "Безлимит"
+            }
+        } catch (e: Exception) {
+            Log.w(AppConfig.TAG, "GuardX: Error parsing expiry date: ${info.expires_at}", e)
+            "—"
+        }
+        expiryDateText.text = expiryDate
+
+        // Set days remaining
+        val daysText = when {
+            info.days_remaining == null -> "Безлимит"
+            info.days_remaining == 0 -> "Истекает сегодня"
+            info.days_remaining == 1 -> "1 день"
+            info.days_remaining in 2..4 -> "${info.days_remaining} дня"
+            else -> "${info.days_remaining} дней"
+        }
+        daysRemainingText.text = daysText
+
+        // Set days color based on remaining time
+        val daysColor = when {
+            info.days_remaining == null -> android.graphics.Color.parseColor("#00FF88") // Green for unlimited
+            info.days_remaining <= 3 -> android.graphics.Color.parseColor("#FF0066") // Red for critical
+            info.days_remaining <= 7 -> android.graphics.Color.parseColor("#FFA500") // Orange for warning
+            else -> android.graphics.Color.parseColor("#00FF88") // Green for normal
+        }
+        daysRemainingText.setTextColor(daysColor)
+
+        // Set traffic stats
+        trafficStatsText.text = String.format("%.1f / %.1f ГБ",
+            info.traffic_remaining_gb,
+            info.traffic_limit_gb)
+
+        // Calculate traffic percentage remaining
+        val percentRemaining = if (info.traffic_limit_gb > 0) {
+            ((info.traffic_remaining_gb / info.traffic_limit_gb) * 100).toInt()
+        } else {
+            100 // Unlimited
+        }
+
+        trafficProgress.progress = percentRemaining
+        trafficPercentText.text = "$percentRemaining%"
+
+        // Set progress bar color based on remaining traffic
+        val progressColor = when {
+            percentRemaining >= 50 -> android.graphics.Color.parseColor("#00FF88") // Green
+            percentRemaining >= 20 -> android.graphics.Color.parseColor("#FFA500") // Orange
+            else -> android.graphics.Color.parseColor("#FF0066") // Red
+        }
+        trafficProgress.progressTintList = android.content.res.ColorStateList.valueOf(progressColor)
+        trafficPercentText.setTextColor(progressColor)
+
+        // Set Telegram ID (get from auth storage)
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // Extract telegram_id from JWT token
+                val token = com.guardx.vpnbot.api.ServerSyncManager.getToken()
+                if (token != null) {
+                    val telegramId = extractTelegramIdFromToken(token)
+                    launch(Dispatchers.Main) {
+                        telegramIdText.text = "ID: $telegramId"
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(AppConfig.TAG, "GuardX: Error extracting telegram_id", e)
+            }
+        }
+
+        // Setup button click listeners
+        btnRenew.text = if (info.active) "🔁 Продлить подписку" else "💳 Купить подписку"
+        btnRenew.setOnClickListener {
+            openTelegramBot(if (info.active) "renew" else "buy")
+        }
+
+        btnBalance.setOnClickListener {
+            openTelegramBot("balance")
+        }
+
+        // Trial button is hidden by default, shown only if needed
+        btnTrial.visibility = android.view.View.GONE
+    }
+
+    /**
+     * Extract telegram_id from JWT token payload
+     */
+    private fun extractTelegramIdFromToken(token: String): String {
+        return try {
+            val parts = token.split(".")
+            if (parts.size >= 2) {
+                val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.URL_SAFE or android.util.Base64.NO_PADDING))
+                val jsonObject = org.json.JSONObject(payload)
+                jsonObject.optString("telegram_id", "—")
+            } else {
+                "—"
+            }
+        } catch (e: Exception) {
+            Log.w(AppConfig.TAG, "GuardX: Error parsing JWT token", e)
+            "—"
+        }
+    }
+
+    /**
+     * Open Telegram bot with deep link to specific action
+     */
+    private fun openTelegramBot(action: String) {
+        try {
+            // Get bot username from settings or use default
+            val botUsername = "xuiseller_bot"
+
+            // Create deep link
+            val deepLink = when (action) {
+                "buy" -> "https://t.me/$botUsername?start=buy"
+                "renew" -> "https://t.me/$botUsername?start=renew"
+                "trial" -> "https://t.me/$botUsername?start=trial"
+                "balance" -> "https://t.me/$botUsername?start=balance"
+                else -> "https://t.me/$botUsername"
+            }
+
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(deepLink))
+            startActivity(intent)
+
+            Log.d(AppConfig.TAG, "GuardX: Opening Telegram bot with action: $action")
+        } catch (e: Exception) {
+            Log.e(AppConfig.TAG, "GuardX: Error opening Telegram bot", e)
+            toast("Ошибка открытия бота. Убедитесь что Telegram установлен")
+        }
+    }
+
+    /**
+     * Show "no subscription" message and buttons for getting subscription
+     */
+    private fun showNoSubscription() {
+        val headerView = binding.navView.getHeaderView(0)
+        val statsCard = headerView.findViewById<androidx.cardview.widget.CardView>(R.id.subscription_stats_card)
+        val noSubText = headerView.findViewById<android.widget.TextView>(R.id.tv_no_subscription)
+        val subscriptionActions = headerView.findViewById<android.widget.LinearLayout>(R.id.subscription_actions)
+        val btnRenew = headerView.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btn_renew_subscription)
+        val btnTrial = headerView.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btn_trial_period)
+        val btnBalance = headerView.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btn_balance)
+        val telegramIdText = headerView.findViewById<android.widget.TextView>(R.id.tv_telegram_id)
+
+        statsCard.visibility = android.view.View.GONE
+        noSubText.visibility = android.view.View.VISIBLE
+        subscriptionActions.visibility = android.view.View.VISIBLE
+
+        // Show "Buy" instead of "Renew"
+        btnRenew.text = "💳 Купить подписку"
+        btnRenew.setOnClickListener {
+            openTelegramBot("buy")
+        }
+
+        // Show trial button for new users
+        btnTrial.visibility = android.view.View.VISIBLE
+        btnTrial.setOnClickListener {
+            openTelegramBot("trial")
+        }
+
+        btnBalance.setOnClickListener {
+            openTelegramBot("balance")
+        }
+
+        // Set Telegram ID even without subscription
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val token = com.guardx.vpnbot.api.ServerSyncManager.getToken()
+                if (token != null) {
+                    val telegramId = extractTelegramIdFromToken(token)
+                    launch(Dispatchers.Main) {
+                        telegramIdText.text = "ID: $telegramId"
+                        telegramIdText.visibility = android.view.View.VISIBLE
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(AppConfig.TAG, "GuardX: Error extracting telegram_id", e)
+            }
+        }
     }
 }
