@@ -230,6 +230,10 @@
     <string name="toast_tg_app_not_found">Telegram app not found</string>
     <string name="title_privacy_policy">Privacy policy</string>
     <string name="title_about">About</string>
+    <string name="logout">Выйти</string>
+    <string name="logout_confirm_title">Выход из аккаунта</string>
+    <string name="logout_confirm_message">Вы действительно хотите выйти?\n\nВам потребуется повторная авторизация через Telegram бот.</string>
+    <string name="logout_success">Вы успешно вышли из аккаунта</string>
     <string name="title_source_code">Source code</string>
     <string name="title_oss_license">Open Source licenses</string>
     <string name="title_tg_channel">Telegram channel</string>

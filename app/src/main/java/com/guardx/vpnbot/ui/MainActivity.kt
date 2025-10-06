@@ -407,10 +407,45 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     .putExtra("isRunning", mainViewModel.isRunning.value == true)
             )
             R.id.about -> startActivity(Intent(this, AboutActivity::class.java))
+            R.id.logout -> showLogoutConfirmDialog()
         }
 
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    /**
+     * Show logout confirmation dialog
+     */
+    private fun showLogoutConfirmDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.logout_confirm_title)
+            .setMessage(R.string.logout_confirm_message)
+            .setPositiveButton("Выйти") { _, _ ->
+                performLogout()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    /**
+     * Perform logout - clear token and redirect to auth
+     */
+    private fun performLogout() {
+        // Stop VPN if running
+        if (mainViewModel.isRunning.value == true) {
+            V2RayServiceManager.stopVService(this)
+        }
+
+        // Clear authentication token
+        com.guardx.vpnbot.api.ServerSyncManager.clearToken()
+
+        // Show success message
+        toast(R.string.logout_success)
+
+        // Redirect to AuthActivity
+        startActivity(Intent(this, AuthActivity::class.java))
+        finish()
     }
 
     /**
