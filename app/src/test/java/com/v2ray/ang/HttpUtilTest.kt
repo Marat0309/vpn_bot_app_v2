@@ -1,6 +1,6 @@
 package com.v2ray.ang
 
-import com.v2ray.ang.util.HttpUtil
+import com.guardx.vpnbot.util.HttpUtil
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

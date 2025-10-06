@@ -1,6 +1,6 @@
 package com.v2ray.ang
 
-import com.v2ray.ang.util.Utils
+import com.guardx.vpnbot.util.Utils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

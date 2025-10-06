@@ -1,5 +1,3 @@
-# Восстановим .gitignore
-cat > .gitignore << 'EOF'
 # Gradle
 .gradle/
 build/
@@ -10,6 +8,8 @@ build/
 *.iml
 *.iws
 *.ipr
+.navigation/
+captures/
 
 # Local configuration
 local.properties
@@ -21,6 +21,16 @@ app/build/
 *.apk
 *.aab
 *.aar
+*.dex
+*.class
+bin/
+gen/
+out/
+release/
+
+# Keystore files (важно для безопасности!)
+*.jks
+*.keystore
 
 # OS
 .DS_Store
@@ -31,4 +41,7 @@ Thumbs.db
 
 # Lock files
 *.lock
-EOF
+
+# External native build
+.externalNativeBuild
+.cxx/
